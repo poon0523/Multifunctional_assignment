@@ -11,6 +11,7 @@ class UsersController < ApplicationController
     if @user.save
       log_in(@user)
       redirect_to user_path(@user.id), notice: 'アカウントを登録しました。'
+      UserMailer.with(to: @user.email, name: @user.name).welcome.deliver_later
     else
       render :new
     end
@@ -23,7 +24,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:name, :email, :password, :password_confirmation)
+    params.require(:user).permit(:name, :email, :password, :password_confirmation, :profile_image)
   end
 
   def correct_user
